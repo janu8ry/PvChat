@@ -78,7 +78,7 @@ if __name__ == '__main__':
                      [sg.Listbox([], size=(20, 10), key='MEMBERS')]]
     layout = [[sg.Column(chat_column), sg.VerticalSeparator(), sg.Column(player_column)]]
     window = sg.Window("PvChat Client", layout, finalize=True)
-    addr = sg.popup_get_text("host (ip or ip:port)", "host configuration", '192.168.50.31', keep_on_top=True)
+    addr = sg.popup_get_text("host (ip or ip:port)", "host configuration", keep_on_top=True)
     addr = addr.split(":")
     if len(addr) == 2:
         host = addr[0]
