@@ -46,14 +46,14 @@ announce <content>: sends announcement message to all members (aliases: say, a)
 stop <optional: reason>: stops this pvchat server (aliases: quit, q, s)
 kick <member> <optional:reason>: kicks the member (aliases: k)
 ban <member> <optional:reason>: bans the member (aliases: b)
-unban <member> <optional:reason>: ubbans the ip (aliases: u)
+unban <member> <optional:reason>: unbans the ip (aliases: u)
 --------------------------------------------------------------
 """)
         elif command in ('announce', 'say', 'a'):
-            server.send_to_all({'action': 'announce', 'message': args[1:]})
+            server.send_to_all({'action': 'announce', 'message': " ".join(args)})
             print("announcement sent!")
         elif command in ('stop', 'quit', 'q', 's'):
-            server.send_to_all({'action': 'server_closed', 'reason': args[1:]})
+            server.send_to_all({'action': 'server_closed', 'reason': " ".join(args)})
             print("server closed!")
             sys.exit(-1)
         elif command in ('kick', 'k'):
@@ -61,8 +61,8 @@ unban <member> <optional:reason>: ubbans the ip (aliases: u)
             if target is None:
                 print(f"member \"{args[0]}\" not found")
             else:
-                target.Send({'action': 'kick', 'reason': args[1:]})
-                server.send_to_all({'action': 'member_kick', 'name': args[0], 'reason': args[1:]})
+                target.Send({'action': 'kick', 'reason': " ".join(args[1:])})
+                server.send_to_all({'action': 'member_kick', 'name': args[0], 'reason': " ".join(args[1:])})
                 server.remove_channel(target)
                 print(f"kicked member \"{args[0]}\"")
         elif command in ('ban', 'b'):
@@ -70,13 +70,13 @@ unban <member> <optional:reason>: ubbans the ip (aliases: u)
             if target is None:
                 print(f"member \"{args[0]}\" not found")
             else:
-                target.Send({'action': 'ban', 'reason': args[1:]})
-                server.send_to_all({'action': 'member_ban', 'name': args[0], 'reason': args[1:]})
+                target.Send({'action': 'ban', 'reason': " ".join(args[1:])})
+                server.send_to_all({'action': 'member_ban', 'name': args[0], 'reason': " ".join(args[1:])})
                 server.remove_channel(target)
                 with open('blacklist.json', 'r', encoding='utf-8') as f:
                     blacklist = json.load(f)
                 with open('blacklist.json', 'w', encoding='utf-8') as f:
-                    blacklist[target.ip] = {'reason': args[1:], 'time': str(datetime.now())}
+                    blacklist[target.ip] = {'reason': " ".join(args[1:]), 'time': str(datetime.now())}
                     json.dump(blacklist, f)
                 print(f"banned member \"{args[0]}\"")
         elif command in ('unban', 'u'):
